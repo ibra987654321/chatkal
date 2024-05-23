@@ -2,7 +2,7 @@
   <div class="about flex" style="position:relative;">
       <Map/>
 
-    <PeiChart/>
+<!--    <PeiChart/>-->
   </div>
 </template>
 <script>

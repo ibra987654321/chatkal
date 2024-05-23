@@ -42,24 +42,27 @@ export default {
   }),
   methods: {
     submit() {
-    //   axios(`${environment.authAPI}/api/user/login`,{
-    //     method: 'POST',
-    //     data: this.user,
-    //   })
-    //       .then(r => {
-    //         if (r.data.token) {
-    //           setToken(r.data.token)
-    //           this.$router.push({ name: 'main' })
-    //         }
-    //       })
-    //       .catch(e => {
-    //         this.$store.state.loading = false
-    //         if (e.response) {
-    //           this.$store.commit('setSnackBars', e.response.data)
-    //           return
-    //         }
-    //         this.$store.commit('setSnackBars', e.message)
-    //       })
+      axios(`${environment.authAPI}/api/user/login`,{
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        data: this.user,
+      })
+          .then(r => {
+            if (r.data.token) {
+              setToken(r.data.token)
+              this.$router.push({ name: 'main' })
+            }
+          })
+          .catch(e => {
+            this.$store.state.loading = false
+            if (e.response) {
+              this.$store.commit('setSnackBars', e.response.data)
+              return
+            }
+            this.$store.commit('setSnackBars', e.message)
+          })
     }
   }
 }

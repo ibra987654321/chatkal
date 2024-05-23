@@ -1,7 +1,7 @@
 import axios from 'axios'
 import store from '../store'
+import {getToken} from "@/helpers/helpers";
 
-export const getToken = () => sessionStorage.getItem('token')
 
 export const setToken = token => {
   sessionStorage.setItem('token', token)
@@ -207,7 +207,7 @@ export const extraAxios = (method, url, payload) => {
 export const putAxios = (url, payload) => {
   store.state.loading = true
   store.state.error = false
-  const data = axios({
+  return axios({
     method: 'PUT',
     url,
     headers: {
@@ -220,21 +220,20 @@ export const putAxios = (url, payload) => {
     store.commit('setSnackbars', 'Успешно изменено')
     return r.data
   })
-    .catch(e => {
-      store.state.loading = false
-      if (e.response) {
-        store.commit('setSnackbars', e.response.data)
-        return
-      }
-      store.commit('setError')
-      store.commit('setSnackbars', e.message)
-    })
-  return data
+      .catch(e => {
+        store.state.loading = false
+        if (e.response) {
+          store.commit('setSnackbars', e.response.data)
+          return
+        }
+        store.commit('setError')
+        store.commit('setSnackbars', e.message)
+      })
 }
 export const deleteAxios = (url, payload) => {
   store.state.loading = true
   store.state.error = false
-  const data = axios({
+  return axios({
     method: 'DELETE',
     url,
     headers: {
@@ -247,12 +246,11 @@ export const deleteAxios = (url, payload) => {
     store.state.loading = false
     store.commit('setSnackbars', 'Успешно удалено')
   })
-    .catch(e => {
-      store.state.loading = false
-      store.commit('setError')
-      store.commit('setSnackbars', e.message)
-    })
-  return data
+      .catch(e => {
+        store.state.loading = false
+        store.commit('setError')
+        store.commit('setSnackbars', e.message)
+      })
 }
 
 export function debounce (fn, delay) {

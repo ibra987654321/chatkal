@@ -1,24 +1,23 @@
 import {createStore} from "vuex";
-// import axios from "axios";
-// import router from "@/router";
-//
-// // modules--------------
-// import {environment} from "@/environments/environment";
-// import {API, CANDIDATE, CANDIDATE_TYPE, USER} from "@/helpers/endPoints";
-// import {getId, setCandidateType, setId, setToken, setVideoPosition} from "@/helpers/helpers";
-// import testing from "@/store/testing";
-// import video from "@/store/video";
-//
-//
+import axios from "axios";
+import {environment} from "@/environments/environment";
+import {getToken} from "@/helpers/helpers";
 export default createStore({
  state: {
      isOpen: false,
      tooltip: false,
+     loading: false,
      text: null,
      tooltipPosition: {},
      snacks: {
          snackbar: false,
          text: ``,
+         data: {
+             sector: {},
+             house: [],
+             family: [],
+             person: [],
+         }
      },
  },
     mutations: {
@@ -30,9 +29,60 @@ export default createStore({
                 x: rect.left + 20,
                 y:  rect.top -20
             };
+            axios({
+                method: 'GET',
+                url: `${environment.authAPI}/api/sector/findAllById/${val.target.id}`,
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${getToken()}`,
+                },
+            }).then(r => {
+                state.snacks.data.sector = r.data
+                axios({
+                    method: 'GET',
+                    url: `${environment.authAPI}/api/house/findAllBySectorId/${r.data.id}`,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${getToken()}`,
+                    },
+                }).then(t => {
+                    state.snacks.data.house = t.data
+                    t.data.forEach(house => {
+                        axios({
+                            method: 'GET',
+                            url: `${environment.authAPI}/api/family/findAllByHouseId/${house.id}`,
+                            headers: {
+                                'Content-Type': 'application/json',
+                                Authorization: `Bearer ${getToken()}`,
+                            },
+                        }).then(y => {
+                            state.snacks.data.family = y.data
+                            y.data.forEach(family => {
+                                axios({
+                                    method: 'GET',
+                                    url: `${environment.authAPI}/api/person/findAllByFamilyId/${family.id}`,
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        Authorization: `Bearer ${getToken()}`,
+                                    },
+                                }).then(u => {
+                                    state.snacks.data.person = u.data
+                                })
+                            })
+                        })
+                    })
+
+                })
+            })
         },
         closeTooltip(state) {
             state.tooltip = false
+            state.snacks.data = {
+                sector: {},
+                house: [],
+                family: [],
+                person: [],
+            }
             // state.text = null
         },
         setOpen(state, val) {
@@ -46,6 +96,9 @@ export default createStore({
         setSnackBars(state, data) {
             state.snacks.snackbar = true
             state.snacks.text = data
+        },
+        setLoading(state, bool) {
+            state.loading = bool
         }
     }
 })
