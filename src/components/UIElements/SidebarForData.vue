@@ -5,17 +5,14 @@
 
     <div :class="{ 'translate-x-full': !$store.state.isOpen, 'translate-x-0': $store.state.isOpen }"
          class="fixed inset-y-0 right-0 z-40 max-w-2xl  bg-gray-300 overflow-y-auto ease-in-out transition-all duration-300 transform">
-<!--      <router-link-->
-<!--          to="login"-->
-<!--          class="ml-8 text-sm inline-flex items-center justify-center whitespace-nowrap rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700"-->
-<!--      >Выйти</router-link>-->
+
       <div  v-if="admin" class="relative mx-auto bg-white shadow-md rounded-md overflow-hidden">
 
         <div v-if="!isEdit" class="px-6 pt-4 font-bold text-lg">Номер участка: {{location.location}}</div>
         <div v-if="isEdit" class="px-6 pt-4 font-bold text-lg">
           Номер участка:
           <input v-model="location.location"
-                 class="w-10 px-3 py-2 leading-tight text-gray-700 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                 class="w-20 px-3 py-2 leading-tight text-gray-700 border-4 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
         </div>
         <p v-if="!isEdit" class="px-6 text-gray-700 text-base" @click="isEdit = !isEdit">
           <span class="font-semibold">Улица: </span> {{location.name}} <br>
@@ -23,21 +20,35 @@
         <div v-if="isEdit" class="px-6 py-4">
           <span class="font-semibold">Улица </span>
           <input v-model="location.name"
-                 class="w-full px-3 py-2 leading-tight text-gray-700 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                 class="w-full px-3 py-2 leading-tight text-gray-700 border-4 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+        </div>
+        <p v-if="!isEdit" class="px-6 text-gray-700 text-base" @click="isEdit = !isEdit">
+          <span class="font-semibold">Хозяин: </span> {{location.status}} <br>
+        </p>
+        <div v-if="isEdit" class="px-6 py-4">
+          <span class="font-semibold">Хозяин </span>
+          <input v-model="location.status"
+                 class="w-full px-3 py-2 leading-tight text-gray-700 border-4 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+        </div>
+        <div class="ml-4">
+          <button v-if="!isEdit" @click="isEdit = !isEdit" class="ml-2 text-white bg-blue-500 border-0 py-2 px-6 focus:outline-none hover:bg-blue-600 rounded-lg">Изменить</button>
+          <button v-if="isEdit" @click="saveChanges" class="ml-2 text-white bg-blue-500 border-0 py-2 px-6 focus:outline-none hover:bg-blue-600 rounded-lg">Сохранить</button>
+          <button v-if="isEdit" @click="cancelEdit" class="ml-2 text-white bg-gray-500 border-0 py-2 px-6 focus:outline-none hover:bg-gray-600 rounded-lg">Отмена</button>
         </div>
         <div>
           <div class="px-6 py-4" style="border: 3px solid red; border-radius: 10px; margin: 3px" v-for="(house, houseIndex) in location.house" :key="house.id">
             <div class="flex items-center mb-6">
               <p v-if="!house.isEdit" class="text-gray-700 text-base" @click="house.isEdit = !house.isEdit">
-                <span class="font-semibold">Адрес: </span> {{house.address}}<br>
+                <span class="font-semibold">Номер дома: </span> {{house.address}}<br>
               </p>
               <div v-if="house.isEdit" class="flex  items-center">
-                <span class="font-semibold">Адрес</span>
+                <span class="font-semibold">Номер дома</span>
                 <input v-model="house.address"
-                       class="w-full px-3 py-2 leading-tight text-gray-700 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                       class="w-full  px-3 py-2 leading-tight text-gray-700 border-2 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
               </div>
-              <button @click="deleteHouse(house.id)" class="text-xs ml-2 mt-3 text-white bg-red-500 border-0 py-2 px-6 focus:outline-none hover:bg-red-600 rounded-lg">Удалить дом</button>
-              <button @click="changeHouse(house)" class="text-xs ml-2 mt-3 text-white bg-blue-500 border-0 py-2 px-6 focus:outline-none hover:bg-red-600 rounded-lg">Сохранить дом</button>
+              <button v-if="house.isEdit" @click="deleteHouse(house.id)" class="text-xs ml-2 text-white bg-red-500 border-0 py-2 px-6 focus:outline-none hover:bg-red-600 rounded-lg">Удалить дом</button>
+              <button v-if="house.isEdit" @click="changeHouse(house)" class="text-xs ml-2 text-white bg-blue-500 border-0 py-2 px-6 focus:outline-none hover:bg-blue-600 rounded-lg">Сохранить дом</button>
+              <button v-if="!house.isEdit" @click="house.isEdit = !house.isEdit" class="text-xs ml-2 text-white bg-green-500 border-0 py-2 px-6 focus:outline-none hover:bg-green-600 rounded-lg">Изменить дом</button>
             </div>
 
 
@@ -57,11 +68,7 @@
           </div>
           <button @click="addHouse" class="ml-2 my-4 text-white bg-blue-600 border-0 py-2 px-6 focus:outline-none hover:bg-blue-600 rounded-lg">Добавить дом</button>
         </div>
-        <div class="mb-4">
-          <button v-if="!isEdit" @click="isEdit = !isEdit" class="ml-2 text-white bg-blue-500 border-0 py-2 px-6 focus:outline-none hover:bg-blue-600 rounded-lg">Изменить</button>
-          <button v-if="isEdit" @click="saveChanges" class="ml-2 text-white bg-blue-500 border-0 py-2 px-6 focus:outline-none hover:bg-blue-600 rounded-lg">Сохранить</button>
-          <button v-if="isEdit" @click="cancelEdit" class="ml-2 text-white bg-gray-500 border-0 py-2 px-6 focus:outline-none hover:bg-gray-600 rounded-lg">Отмена</button>
-        </div>
+
       </div>
       <div v-else style="width: 500px;">
           <div class="bg-white shadow-xl rounded-lg overflow-hidden">
@@ -75,35 +82,84 @@
                 <div class="p-4">
                   <p class="uppercase tracking-wide text-sm font-bold text-gray-700">Номер участка • {{location.location}}</p>
                   <p class="text-3xl text-gray-900">{{location.name}}</p>
-                  <p class="text-gray-700">Владелец</p>
+                  <p class="text-gray-700">Владелец {{location.status}}</p>
                 </div>
                 <div  v-for="(house, houseIndex) in location.house">
                   <div class="flex p-4 border-t border-gray-300 text-gray-700">
                     <div class="flex-1 inline-flex items-center" >
-                      <svg class="h-6 w-6 text-gray-600 fill-current mr-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                        <path d="M0 16L3 5V1a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v4l3 11v5a1 1 0 0 1-1 1v2h-1v-2H2v2H1v-2a1 1 0 0 1-1-1v-5zM19 5h1V1H4v4h1V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1h2V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1zm0 1v2a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1V6h-2v2a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V6H3.76L1.04 16h21.92L20.24 6H19zM1 17v4h22v-4H1zM6 4v4h4V4H6zm8 0v4h4V4h-4z"></path>
+                      <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="mr-3"
+                      >
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                        <polyline points="9 22 9 12 15 12 15 22" />
                       </svg>
+
                       <p><span class="text-gray-900 font-bold">{{location.house.length}}</span> Дом</p>
                     </div>
                     <div class="flex-1 inline-flex items-center">
-                      <svg class="h-6 w-6 text-gray-600 fill-current mr-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                        <path fill-rule="evenodd" d="M17.03 21H7.97a4 4 0 0 1-1.3-.22l-1.22 2.44-.9-.44 1.22-2.44a4 4 0 0 1-1.38-1.55L.5 11h7.56a4 4 0 0 1 1.78.42l2.32 1.16a4 4 0 0 0 1.78.42h9.56l-2.9 5.79a4 4 0 0 1-1.37 1.55l1.22 2.44-.9.44-1.22-2.44a4 4 0 0 1-1.3.22zM21 11h2.5a.5.5 0 1 1 0 1h-9.06a4.5 4.5 0 0 1-2-.48l-2.32-1.15A3.5 3.5 0 0 0 8.56 10H.5a.5.5 0 0 1 0-1h8.06c.7 0 1.38.16 2 .48l2.32 1.15a3.5 3.5 0 0 0 1.56.37H20V2a1 1 0 0 0-1.74-.67c.64.97.53 2.29-.32 3.14l-.35.36-3.54-3.54.35-.35a2.5 2.5 0 0 1 3.15-.32A2 2 0 0 1 21 2v9zm-5.48-9.65l2 2a1.5 1.5 0 0 0-2-2zm-10.23 17A3 3 0 0 0 7.97 20h9.06a3 3 0 0 0 2.68-1.66L21.88 14h-7.94a5 5 0 0 1-2.23-.53L9.4 12.32A3 3 0 0 0 8.06 12H2.12l3.17 6.34z"></path>
-                      </svg>
+                      <svg fill="#000000"    width="24"
+                           height="24" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                           viewBox="0 0 297 297" xml:space="preserve">
+                        <g>
+                          <polygon points="149.367,22.541 276.86,165 297,165 149.167,0 82.167,73.846 82.167,33 49.167,33 49.167,110.307 0,165 20.435,165
+                              "/>
+                          <path d="M149.134,46.459L41.167,165.568V297h213V165h1.222L149.134,46.459z M103.343,226.533c-1.989,2.591-3.695,5.421-5.139,8.467
+                            H74.437c0-25,11.222-35.533,26.858-38.976c-7.738-4.54-12.938-13.063-12.938-22.683c0-14.439,11.705-26.206,26.144-26.206
+                            c10.188,0,19.009,5.816,23.323,14.312c-18.084,4.739-31.467,21.219-31.467,40.77c0,6.025,1.309,11.895,3.72,17.247
+                            C107.58,221.554,105.354,223.912,103.343,226.533z M135.295,225.024c-7.738-4.54-12.939-13.063-12.939-22.683
+                            c0-14.439,11.705-26.269,26.144-26.269s26.144,11.704,26.144,26.144c0,9.623-5.204,18.274-12.947,22.814
+                            c15.641,3.44,26.867,13.97,26.867,38.97h-80.127C108.437,239,119.658,228.467,135.295,225.024z M198.795,235
+                            c-1.444-3.047-3.152-5.878-5.144-8.47c-2.012-2.619-4.251-4.975-6.744-7.062c2.411-5.354,3.729-11.225,3.729-17.252
+                            c0-19.875-13.827-36.568-32.366-40.988c4.348-8.405,13.115-14.155,23.23-14.155c14.439,0,26.144,11.704,26.144,26.144
+                            c0,9.623-5.204,18.274-12.947,22.814c15.641,3.44,26.867,13.97,26.867,38.97H198.795z"/>
+                        </g>
+                        </svg>
                       <p><span class="text-gray-900 font-bold">{{house.families.length}}</span> Семья</p>
                     </div>
                   </div>
                   <div class="px-4 pt-3 pb-4 border-t border-gray-300 bg-gray-100" v-for="family in house.families">
-                    <div class="text-xs uppercase font-bold text-gray-600 tracking-wide">Состав семии: {{family.familyName}}</div>
+                    <div class="text-xs uppercase font-bold text-gray-600 tracking-wide">Состав семии</div>
                     <div class="flex items-center pt-2 mt-1" v-for="person in family.person">
-                      <div class="bg-cover bg-center w-10 h-10 rounded-full mr-3" style="background-image: url(https://images.unsplash.com/photo-1500522144261-ea64433bbe27?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=751&q=80)">
+                      <div class="bg-cover bg-center w-10 h-10 rounded-full mr-3">
+                        <img :src="require('../../assets/avatar.png')" alt="">
                       </div>
                       <div>
-                        <p class="font-bold text-gray-900">{{ person.name }} {{ person.surname }}</p>
-                        <div class="flex">
-                          <p class="text-sm text-gray-700">{{ person.status }}</p>
-                          <p class="text-sm text-gray-700">{{ person.status }}</p>
-                        </div>
 
+
+<!--                        <div class="flex">-->
+<!--                          <p class="text-sm mr-3 text-gray-700">{{ person.criminal ? 'Соттолгон' : 'Соттолгон эмес' }}</p>-->
+<!--                          <p class="text-sm text-gray-700">{{ person.migration ? 'Мигрант' : 'Мигрант эмес' }}</p>-->
+<!--                        </div>-->
+                        <div id="alert-additional-content-1" class="p-4 mb-4 text-blue-800 border border-blue-300 rounded-lg bg-blue-50 " role="alert">
+                          <div class="flex items-center">
+                            <p class="font-bold text-gray-900">{{ person.name }} {{ person.surname }} </p>
+                            <button type="button" class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full text-sm px-2 py-1 ml-2 ">
+                              {{ person.status }}</button>
+                          </div>
+
+                          <div class="mt-2 mb-4 text-sm">
+                            {{ person.comments }}</div>
+                          <div class="flex">
+                            <button type="button" class="text-white bg-blue-800 hover:bg-blue-900 focus:ring-4 focus:outline-none focus:ring-blue-200 font-medium rounded-lg text-xs px-3 py-1.5 me-2 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                              <svg class="me-2 h-3 w-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 14">
+                                <path d="M10 0C4.612 0 0 5.336 0 7c0 1.742 3.546 7 10 7 6.454 0 10-5.258 10-7 0-1.664-4.612-7-10-7Zm0 10a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+                              </svg>
+                              {{ person.criminal ? 'Соттолгон' : 'Соттолгон эмес' }}
+                            </button>
+                            <button type="button" class="text-blue-800 bg-transparent border border-blue-800 hover:bg-blue-900 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-200 font-medium rounded-lg text-xs px-3 py-1.5 text-center dark:hover:bg-blue-600 dark:border-blue-600 dark:text-blue-400 dark:hover:text-white dark:focus:ring-blue-800" data-dismiss-target="#alert-additional-content-1" aria-label="Close">
+                              {{ person.migration ? 'Мигрант' : 'Мигрант эмес' }}
+                            </button>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -111,6 +167,11 @@
 
               </div>
       </div>
+      <router-link
+          to="login"
+          @click="exit"
+          class="m-8 text-sm inline-flex items-center justify-center whitespace-nowrap rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
+      >Выйти</router-link>
     </div>
   </div>
 
@@ -118,7 +179,7 @@
 
 <script>
 import axios from "axios";
-import {getToken, parseJwt} from "@/helpers/helpers";
+import {decodeJWT, getToken, parseJwt, removeToken} from "@/helpers/helpers";
 import { environment } from "@/environments/environment";
 import useTable from "@/components/UIElements/useTable";
 import {deleteAxios, getAxios, postAxios, putAxios} from "@/helpers/fetchPoint";
@@ -126,8 +187,11 @@ import {deleteAxios, getAxios, postAxios, putAxios} from "@/helpers/fetchPoint";
 export default {
   name: "SidebarForData",
   components: { useTable },
+  mounted() {
+  },
   data() {
     return {
+      img: `background-image: url('../assets/avatar.png')`,
       location: {
         house: []
       },
@@ -163,6 +227,7 @@ export default {
     },
     changeHouse(item) {
       putAxios(`${environment.authAPI}/api/house/update`, {id: item.id, sector_id: Number(this.$store.state.text), address: item.address})
+      .then(() => item.isEdit = false)
     },
     deleteHouse(id) {
       deleteAxios(`${environment.authAPI}/api/house/delete/${id}`)
@@ -177,8 +242,8 @@ export default {
     },
     addFamily(index, id) {
       postAxios(`${environment.authAPI}/api/family/save`, {id: 0, house_id: Number(id), familyName: ''})
-      .then(() => {
-        const newFamily = JSON.parse(JSON.stringify(this.defaultFamily));
+      .then((newFamily) => {
+        // const newFamily = JSON.parse(JSON.stringify(this.defaultFamily));
         this.location.house[index].families.push(newFamily);
       })
 
@@ -194,22 +259,14 @@ export default {
       })
 
     },
+    exit() {
+      this.$store.commit('setOpen', false)
+      removeToken()
+    },
     async saveChanges() {
       const updatedLocation = JSON.parse(JSON.stringify(this.location));
-
-      // Отправляем скопированные данные на сервер
-      await axios({
-        method: 'PUT',
-        url: environment.authAPI + '/api/sector/update',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${getToken()}`,
-        },
-        data: updatedLocation,
-      }).then(() => {
-        // Если запрос успешно отправлен, устанавливаем флаг isEdit в false
-        this.isEdit = false;
-      });
+      putAxios(environment.authAPI + '/api/sector/update',updatedLocation)
+      .then(() => this.isEdit = false)
     },
 
     cancelEdit() {
@@ -219,8 +276,12 @@ export default {
   },
   watch: {
     '$store.state.isOpen'(v) {
-
       if (v) {
+        if (Date.now() > decodeJWT().exp * 1000) {
+          this.$router.push({name: 'login'})
+          this.$store.commit('setSnackBars', 'Сессия истекло')
+          return
+        }
         this.$store.commit('setLoading', true)
         axios({
           method: 'GET',

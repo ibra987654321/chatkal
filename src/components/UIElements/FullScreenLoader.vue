@@ -10,17 +10,3 @@
   </div>
 </template>
 
-<script>
-export default {
-  props: {
-    loading: {
-      type: Boolean,
-      default: false
-    }
-  }
-}
-</script>
-
-<style scoped>
-/* Дополнительные стили, если необходимо */
-</style>

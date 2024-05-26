@@ -79,6 +79,17 @@
               <input v-model="editedUser.status" type="text" id="editPosition" name="editPosition" class="w-full px-3 py-2 leading-tight text-gray-700 border rounded-md shadow-sm dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200 focus:outline-none focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-blue-500 dark:focus:border-blue-600">
             </div>
           </div>
+          <div class="mb-4">
+            <label for="comments" class="block mb-2 text-sm font-medium text-gray-600 dark:text-gray-400">Комментарий</label>
+            <textarea
+                v-model="editedUser.comments"
+                type="text"
+                id="comments"
+                name="comments"
+                class="w-full  px-3 py-2 leading-tight text-gray-700 border rounded-md shadow-sm dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200 focus:outline-none focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-blue-500 dark:focus:border-blue-600"
+            >
+              </textarea>
+          </div>
           <div class="flex">
             <div class="mb-4 flex items-center justify-center">
               <div class="flex items-center">
@@ -92,21 +103,18 @@
                 <label for="migration" class="block ml-2 text-sm font-medium text-gray-600 dark:text-gray-400">Миграция</label>
               </div>
             </div>
-            <div class="mb-4">
-              <label for="comments" class="block mb-2 text-sm font-medium text-gray-600 dark:text-gray-400">Комментарий</label>
-              <input v-model="editedUser.comments" type="text" id="comments" name="comments" class="w-full px-3 py-2 leading-tight text-gray-700 border rounded-md shadow-sm dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200 focus:outline-none focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-blue-500 dark:focus:border-blue-600">
-            </div>
+
           </div>
-          <div>
+          <div v-if="editedIndex === -1">
             <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Имущества</h3>
-            <crud-list @arr-changed="handleArrChanged" :userId="editedUser.id" :arr="editedUser.holdingList"></crud-list>
+            <crud-list @arr-changed="handleArrChanged" :userId="editedId" :arr="editedUser.holdingList"></crud-list>
           </div>
         </div>
         <!-- Modal footer -->
         <div class="flex justify-between p-4 border-t dark:border-gray-600">
           <button @click="closeEditModal" class="text-white bg-gray-500 border-0 py-2 px-6 focus:outline-none hover:bg-blue-600 rounded-lg">Отмена</button>
           <button @click="saveChanges" class="text-white bg-blue-500 border-0 py-2 px-6 focus:outline-none hover:bg-blue-600 rounded-lg">Сохранить</button>
-          <button @click="deleteItem(editedUser)" class="text-white bg-red-500 border-0 py-2 px-6 focus:outline-none hover:bg-red-600 rounded-lg">Удалить</button>
+          <button v-if="editedIndex === -1" @click="deleteItem(editedUser)" class="text-white bg-red-500 border-0 py-2 px-6 focus:outline-none hover:bg-red-600 rounded-lg">Удалить</button>
         </div>
       </div>
     </div>
@@ -119,7 +127,11 @@ import {deleteAxios, postAxios, putAxios} from "@/helpers/fetchPoint";
 import {environment} from "@/environments/environment";
 export default {
   props: {
-    data: Array,
+    data: {
+      type: Array,
+      required: true,
+      default: () => []
+    },
     familyId: Number
   },
   components: {crudList},
@@ -150,18 +162,20 @@ export default {
         holdingList: [],
         livestockList: []
       },
-      editedIndex: 1
+      editedIndex: 1,
+      editedId: 0,
     };
   },
   methods: {
     openEditModal(user) {
       this.editedIndex = -1;
+      this.editedId = user.id;
       this.isEditModalOpen = true;
       this.editedUser = { ...user };
     },
     closeEditModal() {
       this.isEditModalOpen = false;
-      this.editedUser = {};
+      this.editedUser = this.defaultItem;
     },
     handleArrChanged(updatedObj) {
       const index = this.$props.data.findIndex(item => item.id === updatedObj.id);
@@ -194,10 +208,10 @@ export default {
       } else {
         this.editedUser.family_id = this.$props.familyId
         postAxios(`${environment.authAPI}/api/person/save`, this.editedUser)
-        .then(() => {
-          this.$props.data.push(this.editedUser);
-          this.closeEditModal();
-        })
+            .then(r => {
+              this.$props.data.push(r);
+              this.closeEditModal();
+            })
 
       }
 

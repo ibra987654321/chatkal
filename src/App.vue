@@ -4,6 +4,7 @@
     <component :is="components[layout]">
       <router-view/>
     </component>
+    <Toast />
     <div v-if="$store.state.tooltip" class="absolute  bg-gray-300  p-2 rounded shadow-md " :style="{ top: $store.state.tooltipPosition.y + 'px', left: $store.state.tooltipPosition.x + 'px' }">
       <div class="px-6 py-4">
         <div class="font-bold text-xl mb-2">Участок №{{$store.state.snacks.data.sector.location}}</div>
@@ -14,7 +15,6 @@
         </p>
       </div>
     </div>
-    <sidebar-for-data v-if="token"></sidebar-for-data>
   </div>
 </template>
 
@@ -26,19 +26,28 @@ import SidebarForData from "@/components/UIElements/SidebarForData";
 import {useRoute} from "vue-router/dist/vue-router";
 import {computed, onMounted} from "vue";
 import FullScreenLoader from "@/components/UIElements/FullScreenLoader";
-import { getToken} from "@/helpers/helpers";
 
+import Toast from "@/components/UIElements/Toast";
+import { ref } from 'vue';
+
+const toastRef = ref(null);
 const components = {
   main: MainLayout,
   special: SpecialLayout,
   SidebarForData,
-  FullScreenLoader
+  FullScreenLoader,
+  Toast,
 }
 const route = useRoute()
 const layout = computed(() => {
   return (route.meta.layout || 'special')
 })
-const token = getToken()
+
+function showToast() {
+  if (toastRef.value) {
+    toastRef.value.showToast('Успешно!');
+  }
+}
 
 </script>
 

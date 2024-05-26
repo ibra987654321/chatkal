@@ -101,6 +101,8 @@
       <div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
         <router-view/>
       </div>
+      <sidebar-for-data></sidebar-for-data>
+
     </main>
   </div>
 </template>
@@ -120,6 +122,11 @@ import { Bars3Icon, BellIcon, XMarkIcon,   ArrowPathIcon,
 import { ChevronDownIcon } from '@heroicons/vue/20/solid'
 
 import {ref} from "vue";
+import SidebarForData from "@/components/UIElements/SidebarForData";
+
+const components = {
+  SidebarForData,
+}
 const user = {
   name: 'Tom Cook',
   email: 'tom@example.com',

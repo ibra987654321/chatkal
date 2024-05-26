@@ -8,16 +8,14 @@ export default createStore({
      tooltip: false,
      loading: false,
      text: null,
+     toast: {
+         show: false,
+         message: ''
+     },
      tooltipPosition: {},
      snacks: {
          snackbar: false,
          text: ``,
-         data: {
-             sector: {},
-             house: [],
-             family: [],
-             person: [],
-         }
      },
  },
     mutations: {
@@ -26,8 +24,8 @@ export default createStore({
             state.text = val.target.id
             const rect = val.currentTarget.getBoundingClientRect();
             state.tooltipPosition = {
-                x: rect.left + 20,
-                y:  rect.top -20
+                x: rect.left + 60,
+                y:  rect.top -60
             };
             axios({
                 method: 'GET',
