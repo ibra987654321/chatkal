@@ -1,11 +1,10 @@
 <template>
   <div class="relative">
-
     <div v-if="$store.state.isOpen" @click="$store.commit('setOpen', false)" class="fixed inset-0 bg-black opacity-50 z-30"></div>
-
-    <div :class="{ 'translate-x-full': !$store.state.isOpen, 'translate-x-0': $store.state.isOpen }"
-         class="fixed inset-y-0 right-0 z-40 max-w-2xl  bg-gray-300 overflow-y-auto ease-in-out transition-all duration-300 transform">
-
+    <div
+        :class="{ 'translate-x-full': !$store.state.isOpen, 'translate-x-0': $store.state.isOpen }"
+        class="fixed inset-y-0 right-0 z-40 max-w-2xl  bg-gray-300 overflow-y-auto ease-in-out transition-all duration-300 transform"
+    >
       <div  v-if="admin" class="relative mx-auto bg-white shadow-md rounded-md overflow-hidden">
 
         <div v-if="!isEdit" class="px-6 pt-4 font-bold text-lg">Номер участка: {{location.location}}</div>
@@ -102,7 +101,6 @@
                         <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
                         <polyline points="9 22 9 12 15 12 15 22" />
                       </svg>
-
                       <p><span class="text-gray-900 font-bold">{{location.house.length}}</span> Дом</p>
                     </div>
                     <div class="flex-1 inline-flex items-center">
@@ -128,44 +126,48 @@
                   </div>
                   <div class="px-4 pt-3 pb-4 border-t border-gray-300 bg-gray-100" v-for="family in house.families">
                     <div class="text-xs uppercase font-bold text-gray-600 tracking-wide">Состав семии</div>
-                    <div class="flex items-center pt-2 mt-1" v-for="person in family.person">
-                      <div class="bg-cover bg-center w-10 h-10 rounded-full mr-3">
-                        <img :src="require('../../assets/avatar.png')" alt="">
-                      </div>
-                      <div>
-
-
-<!--                        <div class="flex">-->
-<!--                          <p class="text-sm mr-3 text-gray-700">{{ person.criminal ? 'Соттолгон' : 'Соттолгон эмес' }}</p>-->
-<!--                          <p class="text-sm text-gray-700">{{ person.migration ? 'Мигрант' : 'Мигрант эмес' }}</p>-->
-<!--                        </div>-->
-                        <div id="alert-additional-content-1" class="p-4 mb-4 text-blue-800 border border-blue-300 rounded-lg bg-blue-50 " role="alert">
-                          <div class="flex items-center">
-                            <p class="font-bold text-gray-900">{{ person.name }} {{ person.surname }} </p>
-                            <button type="button" class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full text-sm px-2 py-1 ml-2 ">
-                              {{ person.status }}</button>
+                    <div class="flex flex-col items-center pt-2 mt-1"  v-for="user in family.person" :class="['border  rounded-lg','border-blue-500']">
+                          <div class="flex items-center p-4" >
+                            <div class="flex items-center mb-2">
+                              <div class="bg-blue-500 text-white rounded w-12 h-12  flex items-center justify-center mr-4" style="min-width: 3rem">
+                                {{ user.status }}
+                              </div>
+                              <div style="width: 300px;">
+                                <h2 class="text-lg font-semibold">{{ user.name }} {{ user.surname }}</h2>
+                                <p>{{ user.relation }}</p>
+                              </div>
+                            </div>
+                            <div class="flex flex-col justify-between">
+                              <button type="button" @click="toggleDetails(user.id)" class="text-white ml-2 bg-blue-800 hover:bg-blue-900 focus:ring-4 focus:outline-none focus:ring-blue-200 font-medium rounded-lg text-xs px-3 py-1.5 me-2 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                  {{activeUserId === user.id ? 'Закрыть' : 'Открыть'}}
+                               </button>
+                            </div>
                           </div>
-
-                          <div class="mt-2 mb-4 text-sm">
-                            {{ person.comments }}</div>
-                          <div class="flex">
-                            <button type="button" class="text-white bg-blue-800 hover:bg-blue-900 focus:ring-4 focus:outline-none focus:ring-blue-200 font-medium rounded-lg text-xs px-3 py-1.5 me-2 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                              <svg class="me-2 h-3 w-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 14">
-                                <path d="M10 0C4.612 0 0 5.336 0 7c0 1.742 3.546 7 10 7 6.454 0 10-5.258 10-7 0-1.664-4.612-7-10-7Zm0 10a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
-                              </svg>
-                              {{ person.criminal ? 'Соттолгон' : 'Соттолгон эмес' }}
-                            </button>
-                            <button type="button" class="text-blue-800 bg-transparent border border-blue-800 hover:bg-blue-900 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-200 font-medium rounded-lg text-xs px-3 py-1.5 text-center dark:hover:bg-blue-600 dark:border-blue-600 dark:text-blue-400 dark:hover:text-white dark:focus:ring-blue-800" data-dismiss-target="#alert-additional-content-1" aria-label="Close">
-                              {{ person.migration ? 'Мигрант' : 'Мигрант эмес' }}
-                            </button>
+                      <transition style="width: 100%;" name="fade">
+                        <div v-if="activeUserId === user.id" class="px-4 mb-4">
+                          <p>Детальная информация о пользователе {{ user.name }}.</p>
+                          <div>
+                              <span :class="['text-sm mr-2', user.criminal ? 'text-red-500' : 'text-green-500']">
+                               {{ user.criminal ? 'Соттолгон' : 'Соттолгон эмес' }}
+                              </span>
+                            <span :class="['text-sm', user.migration ? 'text-yellow-500' : 'text-green-500']">
+                                {{ user.migration ? 'Мигрант' : 'Мигрант эмес' }}
+                              </span>
                           </div>
+                          <p>{{ user.comments }}</p>
+                          <h2 class="mb-2 text-lg font-semibold mt-4">Имущества</h2>
+                          <ul class="max-w-md space-y-1  list-disc list-inside ">
+                            <li v-for="listItem in holding">
+                              {{ listItem.holdingName }}
+                            </li>
+                          </ul>
+
                         </div>
-                      </div>
+                      </transition>
                     </div>
                   </div>
                 </div>
-
-              </div>
+         </div>
       </div>
       <router-link
           to="login"
@@ -187,14 +189,12 @@ import {deleteAxios, getAxios, postAxios, putAxios} from "@/helpers/fetchPoint";
 export default {
   name: "SidebarForData",
   components: { useTable },
-  mounted() {
-  },
   data() {
     return {
-      img: `background-image: url('../assets/avatar.png')`,
       location: {
         house: []
       },
+      activeUserId: null,
       isEdit: false,
       defaultHouseItem: {
         id: 0,
@@ -211,10 +211,19 @@ export default {
       defaultFamily:    {
         familyName: "",
         person: []
-      }
+      },
+      holding: []
     };
   },
   methods: {
+    toggleDetails(userId) {
+      this.holding = []
+      this.activeUserId = this.activeUserId === userId ? null : userId;
+      getAxios(`${environment.authAPI}/api/holding/findAllByPersonId/${userId}`)
+      .then(r => {
+        this.holding = r
+      })
+    },
     addHouse() {
       let newHouse = JSON.parse(JSON.stringify(this.defaultHouseItem));
       this.defaultHouseItem.sector_id = Number(this.$store.state.text)
@@ -223,7 +232,6 @@ export default {
         this.location.house.push(newHouse);
         this.isEdit = true
       })
-
     },
     changeHouse(item) {
       putAxios(`${environment.authAPI}/api/house/update`, {id: item.id, sector_id: Number(this.$store.state.text), address: item.address})
@@ -243,10 +251,8 @@ export default {
     addFamily(index, id) {
       postAxios(`${environment.authAPI}/api/family/save`, {id: 0, house_id: Number(id), familyName: ''})
       .then((newFamily) => {
-        // const newFamily = JSON.parse(JSON.stringify(this.defaultFamily));
         this.location.house[index].families.push(newFamily);
       })
-
     },
     deleteFamily(idx, id) {
       deleteAxios(`${environment.authAPI}/api/family/delete/${id}`)
@@ -270,7 +276,6 @@ export default {
     },
 
     cancelEdit() {
-      // Handle cancel edit logic
       this.isEdit = false;
     }
   },
@@ -325,7 +330,11 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-/* Add your styles here */
+<style>
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active в версиях ниже 2.1.8 */ {
+  opacity: 0;
+}
 </style>

@@ -8,8 +8,6 @@
           <th scope="col" class="px-6 py-3">Имя</th>
           <th scope="col" class="px-6 py-3">Фамилия</th>
           <th scope="col" class="px-6 py-3">Статус</th>
-          <th scope="col" class="px-6 py-3">Судимость</th>
-          <th scope="col" class="px-6 py-3">Мигрант</th>
           <th scope="col" class="px-6 py-3">Действие</th>
         </tr>
         </thead>
@@ -30,18 +28,18 @@
             </div>
           </td>
           <td class="px-6 py-4">{{ user.status }}</td>
-          <td class="w-4 p-4">
-            <div class="flex items-center">
-              <input :id="'checkbox-table-search-' + (index + 1)" v-model="user.criminal" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-              <label :for="'checkbox-table-search-' + (index + 1)" class="sr-only">checkbox</label>
-            </div>
-          </td>
-          <td class="w-4 p-4">
-            <div class="flex items-center">
-              <input :id="'checkbox-table-search-' + (index + 1)" v-model="user.migration" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-              <label :for="'checkbox-table-search-' + (index + 1)" class="sr-only">checkbox</label>
-            </div>
-          </td>
+<!--          <td class="w-4 p-4">-->
+<!--            <div class="flex items-center">-->
+<!--              <input :id="'checkbox-table-search-' + (index + 1)" v-model="user.criminal" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">-->
+<!--              <label :for="'checkbox-table-search-' + (index + 1)" class="sr-only">checkbox</label>-->
+<!--            </div>-->
+<!--          </td>-->
+<!--          <td class="w-4 p-4">-->
+<!--            <div class="flex items-center">-->
+<!--              <input :id="'checkbox-table-search-' + (index + 1)" v-model="user.migration" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">-->
+<!--              <label :for="'checkbox-table-search-' + (index + 1)" class="sr-only">checkbox</label>-->
+<!--            </div>-->
+<!--          </td>-->
           <td class="px-6 py-4">
             <a href="#" @click="openEditModal(user)" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Изменить</a>
           </td>
@@ -75,8 +73,22 @@
               <input v-model="editedUser.surname" id="editEmail" name="editEmail" class="w-full px-3 py-2 leading-tight text-gray-700 border rounded-md shadow-sm dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200 focus:outline-none focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-blue-500 dark:focus:border-blue-600">
             </div>
             <div class="mb-4">
+              <label for="middleName" class="block mb-2 text-sm font-medium text-gray-600 dark:text-gray-400">Отчество</label>
+              <input v-model="editedUser.middleName" type="text" id="middleName" name="editPosition" class="w-full px-3 py-2 leading-tight text-gray-700 border rounded-md shadow-sm dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200 focus:outline-none focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-blue-500 dark:focus:border-blue-600">
+            </div>
+          </div>
+          <div class="flex">
+            <div class="mb-4">
               <label for="editPosition" class="block mb-2 text-sm font-medium text-gray-600 dark:text-gray-400">Статус</label>
               <input v-model="editedUser.status" type="text" id="editPosition" name="editPosition" class="w-full px-3 py-2 leading-tight text-gray-700 border rounded-md shadow-sm dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200 focus:outline-none focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-blue-500 dark:focus:border-blue-600">
+            </div>
+            <div class="mb-4">
+              <label for="relation" class="block mb-2 text-sm font-medium text-gray-600 dark:text-gray-400">Вид родства</label>
+              <input v-model="editedUser.relation" type="text" id="relation" name="editName" class="w-full px-3 py-2 leading-tight text-gray-700 border rounded-md shadow-sm dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200 focus:outline-none focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-blue-500 dark:focus:border-blue-600">
+            </div>
+            <div class="mb-4 mx-4">
+              <label for="birth" class="block mb-2 text-sm font-medium text-gray-600 dark:text-gray-400">Год рождения</label>
+              <input v-model="editedUser.birth" id="birth" name="editEmail" class="w-full px-3 py-2 leading-tight text-gray-700 border rounded-md shadow-sm dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200 focus:outline-none focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-blue-500 dark:focus:border-blue-600">
             </div>
           </div>
           <div class="mb-4">
@@ -103,6 +115,12 @@
                 <label for="migration" class="block ml-2 text-sm font-medium text-gray-600 dark:text-gray-400">Миграция</label>
               </div>
             </div>
+   <div class="mb-4 mx-4 flex items-center justify-center">
+              <div class="flex items-center">
+                <input id="owner" v-model="editedUser.owner" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                <label for="owner" class="block ml-2 text-sm font-medium text-gray-600 dark:text-gray-400">Владелец</label>
+              </div>
+            </div>
 
           </div>
           <div v-if="editedIndex === -1">
@@ -112,9 +130,9 @@
         </div>
         <!-- Modal footer -->
         <div class="flex justify-between p-4 border-t dark:border-gray-600">
+          <button v-if="editedIndex === -1" @click="deleteItem(editedUser)" class="text-white bg-red-500 border-0 py-2 px-6 focus:outline-none hover:bg-red-600 rounded-lg">Удалить</button>
           <button @click="closeEditModal" class="text-white bg-gray-500 border-0 py-2 px-6 focus:outline-none hover:bg-blue-600 rounded-lg">Отмена</button>
           <button @click="saveChanges" class="text-white bg-blue-500 border-0 py-2 px-6 focus:outline-none hover:bg-blue-600 rounded-lg">Сохранить</button>
-          <button v-if="editedIndex === -1" @click="deleteItem(editedUser)" class="text-white bg-red-500 border-0 py-2 px-6 focus:outline-none hover:bg-red-600 rounded-lg">Удалить</button>
         </div>
       </div>
     </div>
@@ -147,7 +165,10 @@ export default {
         additionalIncome: "",
         migration: false,
         criminal: false,
+        owner: false,
         comments: "",
+        relation: "",
+        birth: "",
       },
       defaultItem: {
         id: 0,
@@ -158,7 +179,10 @@ export default {
         additionalIncome: "",
         migration: false,
         criminal: false,
+        owner: false,
         comments: "",
+        relation: "",
+        birth: "",
         holdingList: [],
         livestockList: []
       },
