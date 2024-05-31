@@ -1,16 +1,10 @@
 <template>
-
-  <div class="max-w-sm w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6">
-
+  <div class="max-w-sm w-full bg-white rounded-lg shadow p-4 md:p-6 2xl:block hidden">
     <div class="flex justify-between items-start w-full">
       <div class="flex-col items-center">
         <div class="flex items-center mb-1">
-          <h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white me-1">Жалпы 200 кожолук </h5>
-
-
+          <h5 class="text-xl font-bold leading-none text-gray-900  me-1">Жалпы 200 кожолук </h5>
         </div>
-
-
       </div>
       <div class="flex justify-end items-center">
         <button id="widgetDropdownButton" data-dropdown-toggle="widgetDropdown" data-dropdown-placement="bottom" type="button"  class="inline-flex items-center justify-center text-gray-500 w-8 h-8 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm"><svg class="w-3.5 h-3.5 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 3">
@@ -78,7 +72,7 @@ export default {
     },
     getChartOptions() {
       return {
-        series: [52.8, 26.8, 20.4],
+        series: [73.5, 19.2, 7],
         colors: ["#7fff00", "#ffff7f", "#ff9f7f"],
         chart: {
           height: 420,
@@ -105,6 +99,7 @@ export default {
           enabled: true,
           style: {
             fontFamily: "Inter, sans-serif",
+            color: '#000'
           },
         },
         legend: {

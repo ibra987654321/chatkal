@@ -80,8 +80,8 @@ export default {
       const newItem = { ...this.defaultItem };
       newItem.person_id = this.$props.userId
       postAxios(`${environment.authAPI}/api/holding/save`, newItem)
-          .then(() => {
-            this.dataArr.push(newItem)
+          .then((r) => {
+            this.dataArr.push(r)
             this.$emit('arr-changed', {id: this.$props.userId, arr: this.$props.arr});
           })
 

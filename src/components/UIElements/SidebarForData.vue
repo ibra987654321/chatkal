@@ -126,15 +126,15 @@
                   </div>
                   <div class="px-4 pt-3 pb-4 border-t border-gray-300 bg-gray-100" v-for="family in house.families">
                     <div class="text-xs uppercase font-bold text-gray-600 tracking-wide">Состав семии</div>
-                    <div class="flex flex-col items-center pt-2 mt-1"  v-for="user in family.person" :class="['border  rounded-lg','border-blue-500']">
+                    <div class="flex flex-col items-center pt-2 mt-1"  v-for="user in  sortedFamily(family.person)" :class="['border  rounded-lg','border-blue-500']">
                           <div class="flex items-center p-4" >
                             <div class="flex items-center mb-2">
                               <div class="bg-blue-500 text-white rounded w-12 h-12  flex items-center justify-center mr-4" style="min-width: 3rem">
-                                {{ user.status }}
+                                {{ user.relation }}
                               </div>
                               <div style="width: 300px;">
                                 <h2 class="text-lg font-semibold">{{ user.name }} {{ user.surname }}</h2>
-                                <p>{{ user.relation }}</p>
+                                <p>{{ user.status }}</p>
                               </div>
                             </div>
                             <div class="flex flex-col justify-between">
@@ -199,13 +199,6 @@ export default {
       defaultHouseItem: {
         id: 0,
         address: "",
-        families: [
-          {
-            "id": 0,
-            familyName: "",
-            person: [ ]
-          }
-        ],
         isEdit: false
       },
       defaultFamily:    {
@@ -216,6 +209,14 @@ export default {
     };
   },
   methods: {
+    sortedFamily(data) {
+      return data.slice().sort((a, b) => {
+        if (a.owner === b.owner) {
+          return 0;
+        }
+        return a.owner ? -1 : 1;
+      });
+    },
     toggleDetails(userId) {
       this.holding = []
       this.activeUserId = this.activeUserId === userId ? null : userId;
@@ -225,11 +226,10 @@ export default {
       })
     },
     addHouse() {
-      let newHouse = JSON.parse(JSON.stringify(this.defaultHouseItem));
       this.defaultHouseItem.sector_id = Number(this.$store.state.text)
-      postAxios(`${environment.authAPI}/api/house/save`, {id: 0, sector_id: Number(this.$store.state.text), address: 'string'})
-      .then( () => {
-        this.location.house.push(newHouse);
+      postAxios(`${environment.authAPI}/api/house/save`, this.defaultHouseItem)
+      .then( (r) => {
+        this.location.house.push(r);
         this.isEdit = true
       })
     },
@@ -251,7 +251,12 @@ export default {
     addFamily(index, id) {
       postAxios(`${environment.authAPI}/api/family/save`, {id: 0, house_id: Number(id), familyName: ''})
       .then((newFamily) => {
-        this.location.house[index].families.push(newFamily);
+        this.location.house.map(i => {
+          if (i.id === id) {
+            i.families = []
+            i.families.push(newFamily)
+          }
+        })
       })
     },
     deleteFamily(idx, id) {

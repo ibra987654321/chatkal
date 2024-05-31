@@ -48,8 +48,8 @@
       </table>
     </div>
     <!-- Edit user modal -->
-    <div v-if="isEditModalOpen" class="absolute inset-0 top-0 z-40 flex items-center justify-center bg-gray-800 bg-opacity-75">
-      <div class="relative w-full max-w-1xl p-4 overflow-x-hidden overflow-y-auto bg-white rounded-lg shadow-lg dark:bg-gray-700">
+    <div v-if="isEditModalOpen" class="absolute inset-0 top-0 z-40 h-full flex items-center justify-center bg-gray-800 bg-opacity-75">
+      <div class="relative w-full h-full max-w-1xl p-4 overflow-x-hidden overflow-y-auto bg-white rounded-lg shadow-lg dark:bg-gray-700">
         <!-- Modal content -->
         <!-- Modal header -->
         <div class="flex items-start justify-between p-4 border-b dark:border-gray-600">
@@ -98,6 +98,7 @@
                 type="text"
                 id="comments"
                 name="comments"
+                style="height: 150px"
                 class="w-full  px-3 py-2 leading-tight text-gray-700 border rounded-md shadow-sm dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200 focus:outline-none focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-blue-500 dark:focus:border-blue-600"
             >
               </textarea>
@@ -199,7 +200,20 @@ export default {
     },
     closeEditModal() {
       this.isEditModalOpen = false;
-      this.editedUser = this.defaultItem;
+      this.editedUser = {
+        id: 0,
+        name: "",
+        surname: "",
+        middleName: "",
+        status: "",
+        additionalIncome: "",
+        migration: false,
+        criminal: false,
+        owner: false,
+        comments: "",
+        relation: "",
+        birth: "",
+      }
     },
     handleArrChanged(updatedObj) {
       const index = this.$props.data.findIndex(item => item.id === updatedObj.id);
@@ -236,6 +250,9 @@ export default {
               this.$props.data.push(r);
               this.closeEditModal();
             })
+        .catch(e => {
+          this.$store.commit('setSnackBars', e)
+        })
 
       }
 
