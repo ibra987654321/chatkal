@@ -21,6 +21,21 @@
           <input v-model="location.name"
                  class="w-full px-3 py-2 leading-tight text-gray-700 border-4 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
         </div>
+
+        <p v-if="!isEdit" class="px-6 text-gray-700 text-base" @click="isEdit = !isEdit">
+          <span class="font-semibold">Состояние: </span> {{location.color}} <br>
+        </p>
+        <div v-if="isEdit" class="px-6 py-4">
+
+          <form class="">
+            <label for="countries" class="block mb-2 text-sm font-medium ">Состояние</label>
+            <select v-model="location.color" id="countries" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ">
+              <option value="Жакшы">Жакшы</option>
+              <option value="Орто">Орто</option>
+              <option value="Начар">Начар</option>
+            </select>
+          </form>
+        </div>
         <p v-if="!isEdit" class="px-6 text-gray-700 text-base" @click="isEdit = !isEdit">
           <span class="font-semibold">Хозяин: </span> {{location.status}} <br>
         </p>

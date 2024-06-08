@@ -125,7 +125,7 @@
 
           </div>
           <div v-if="editedIndex === -1">
-            <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Имущества</h3>
+            <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Информация</h3>
             <crud-list @arr-changed="handleArrChanged" :userId="editedId" :arr="editedUser.holdingList"></crud-list>
           </div>
         </div>
